@@ -218,6 +218,11 @@ func (wt *WrapTokenV1) Unmarshal(b []byte, expectFromAcceptor bool) error {
 		start_position = 13
 	}
 
+	// rfc2743 3.1.2b
+	if b[1] > 0x80 {
+		start_position += int(b[1] - 0x80)
+	}
+
 	// Is the Token ID correct?
 	if !bytes.Equal(TOK_ID[:], b[start_position:start_position+2]) {
 		return fmt.Errorf("wrong Token ID. Expected %s, was %s",
